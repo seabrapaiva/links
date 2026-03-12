@@ -320,13 +320,69 @@
         }
     });
 
-    // --- RELÓGIOS ---
-    function updateClocks() {
-        const now = new Date();
-        document.getElementById('time-porto').innerText = now.toLocaleTimeString('pt-PT', {timeZone: 'Europe/Lisbon'});
-        document.getElementById('time-pristina').innerText = now.toLocaleTimeString('pt-PT', {timeZone: 'Europe/Belgrade'});
+    // --- RELÓGIOS ---// --- Lógica do Cronómetro de Foco Atualizada ---
+let timerInterval;
+let totalSeconds;
+let isPaused = true;
+
+function startTimer() {
+    const btn = document.querySelector('button[onclick="startTimer()"]');
+    
+    if (isPaused) {
+        // Se o timer estiver parado ou resetado, inicializa com o valor do input
+        if (!timerInterval) {
+            const minsInput = document.getElementById('focus-mins').value;
+            totalSeconds = parseInt(minsInput) * 60;
+        }
+        
+        isPaused = false;
+        btn.innerText = "Pausar";
+        btn.style.background = "#ff4757"; // Vermelho enquanto corre
+
+        timerInterval = setInterval(() => {
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                alert("Tempo esgotado! Hora de uma pausa.");
+                resetTimer();
+                return;
+            }
+            totalSeconds--;
+            updateTimerDisplay();
+        }, 1000);
+    } else {
+        // Pausar o timer
+        clearInterval(timerInterval);
+        timerInterval = null;
+        isPaused = true;
+        btn.innerText = "Retomar";
+        btn.style.background = "var(--accent)";
     }
-    setInterval(updateClocks, 1000);
+}
+
+function updateTimerDisplay() {
+    const display = document.getElementById('timer-display');
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    display.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    isPaused = true;
+    const minsInput = document.getElementById('focus-mins').value;
+    document.getElementById('timer-display').innerText = `${minsInput}:00`;
+    document.querySelector('button[onclick="startTimer()"]').innerText = "Iniciar";
+    document.querySelector('button[onclick="startTimer()"]').style.background = "var(--accent)";
+}
+
+// Ouvir mudanças no input para atualizar o display visual imediatamente
+document.getElementById('focus-mins').addEventListener('input', (e) => {
+    if (isPaused && !timerInterval) {
+        document.getElementById('timer-display').innerText = `${e.target.value}:00`;
+    }
+});
+
 
     // --- TO-DO (LocalStorage) ---
     let todos = JSON.parse(localStorage.getItem('aether_todos')) || [];
