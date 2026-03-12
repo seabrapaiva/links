@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>AetherOS // Command Center</title>
+    <style>
+        :root { --bg: #0a0a0c; --accent: #00f2ff; --glass: rgba(20, 20, 25, 0.8); --text: #e0e0e0; }
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { 
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0c 100%);
+            color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        /* Top Bar */
+        header { 
+            padding: 15px 30px; display: flex; justify-content: space-between; 
+            backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Main Grid */
+        main { 
+            display: grid; grid-template-columns: 1fr 350px; grid-template-rows: 1fr 250px;
+            gap: 20px; padding: 20px; flex-grow: 1; 
+        }
+
+        .panel { 
+            background: var(--glass); border-radius: 15px; border: 1px solid rgba(0,242,255,0.2);
+            padding: 20px; position: relative; overflow: hidden;
+        }
+        .panel:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(0,242,255,0.1); }
+
+        /* Terminal Style */
+        #terminal { 
+            background: rgba(0,0,0,0.5); font-family: 'Courier New', monospace; 
+            color: #00ff00; font-size: 0.9rem; overflow-y: auto;
+        }
+        .term-input { 
+            background: transparent; border: none; color: var(--accent); 
+            width: 100%; outline: none; font-family: inherit;
+        }
+
+        /* Notepad */
+        textarea { 
+            width: 100%; height: 100%; background: transparent; border: none; 
+            color: var(--text); resize: none; outline: none; font-size: 1.1rem;
+        }
+
+        /* Widgets */
+        .stat-card { text-align: center; }
+        #clock { font-size: 3.5rem; font-weight: 200; letter-spacing: -2px; }
+        
+        /* Links Customizáveis */
+        .links-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .link-item { 
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;
+            text-decoration: none; color: var(--accent); text-align: center; font-weight: bold;
+        }
+        .link-item:hover { background: var(--accent); color: #000; }
+
+        /* Neon Decor */
+        .scanline {
+            width: 100%; height: 100%; position: absolute; top: 0; left: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 3px 100%; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div id="greeting">A carregar sistema...</div>
+    <div id="status">SISTEMA ONLINE // CPU 12%</div>
+</header>
+
+<main>
+    <!-- Centro de Notas (Persistente) -->
+    <section class="panel">
+        <h3><i class="fas fa-edit"></i> BLOCO DE NOTAS CORE</h3>
+        <textarea id="notes" placeholder="Escreve os teus planos para dominar o mundo..."></textarea>
+    </section>
+
+    <!-- Links Rápidos -->
+    <section class="panel">
+        <h3><i class="fas fa-link"></i> ACESSO RÁPIDO</h3>
+        <div class="links-grid">
+            <a href="https://google.com" class="link-item">Google</a>
+            <a href="https://youtube.com" class="link-item">YouTube</a>
+            <a href="https://github.com" class="link-item">GitHub</a>
+            <a href="https://chat.openai.com" class="link-item">ChatGPT</a>
+        </div>
+        <p style="font-size: 0.8rem; margin-top: 20px; opacity: 0.5;">* Podes editar estes links no código HTML.</p>
+    </section>
+
+    <!-- Terminal de Comandos -->
+    <section class="panel" id="terminal">
+        <div id="history">Bem-vindo ao Aether Terminal. Digite 'help' para comandos.</div>
+        <div style="display: flex;">
+            <span>>&nbsp;</span>
+            <input type="text" id="cmd" class="term-input" autofocus>
+        </div>
+        <div class="scanline"></div>
+    </section>
+
+    <!-- Relógio & Stats -->
+    <section class="panel stat-card">
+        <div id="clock">00:00:00</div>
+        <div id="date" style="color: var(--accent);">-- / -- / ----</div>
+    </section>
+</main>
+
+<script>
+    // --- Lógica do Relógio e Saudação ---
+    function updateClock() {
+        const d = new Date();
+        document.getElementById('clock').innerText = d.toLocaleTimeString('pt-PT');
+        document.getElementById('date').innerText = d.toLocaleDateString('pt-PT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        
+        const hour = d.getHours();
+        const greet = hour < 12 ? "Bom dia, Comandante." : hour < 18 ? "Boa tarde, Comandante." : "Boa noite, Comandante.";
+        document.getElementById('greeting').innerText = greet;
+    }
+    setInterval(updateClock, 1000);
+
+    // --- Notas Persistentes (Auto-save) ---
+    const noteArea = document.getElementById('notes');
+    noteArea.value = localStorage.getItem('aether_notes') || "";
+    noteArea.addEventListener('input', () => {
+        localStorage.setItem('aether_notes', noteArea.value);
+    });
+
+    // --- Terminal de Comandos ---
+    const cmdInput = document.getElementById('cmd');
+    const history = document.getElementById('history');
+
+    cmdInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const val = cmdInput.value.toLowerCase();
+            let response = "";
+
+            if (val === 'help') response = "Comandos: 'clear', 'time', 'calc [num1+num2]', 'whoami'";
+            else if (val === 'clear') { history.innerHTML = ""; cmdInput.value = ""; return; }
+            else if (val === 'time') response = new Date().toString();
+            else if (val.startsWith('calc ')) {
+                try { response = "Resultado: " + eval(val.replace('calc ', '')); }
+                catch { response = "Erro matemático!"; }
+            }
+            else if (val === 'whoami') response = "Utilizador Nível 1 - Autorizado";
+            else response = "Comando desconhecido: " + val;
+
+            history.innerHTML += `<div>> ${val}</div><div style="color: #aaa">${response}</div>`;
+            cmdInput.value = "";
+            document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+        }
+    });
+</script>
+
+</body>
+</html>
