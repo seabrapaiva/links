@@ -148,7 +148,7 @@
     <div class="card" draggable="true">
         <h3><i class="fas fa-microphone-lines"></i>Expressões Tripeiras</h3>
         <div id="tripeiro-box" style="text-align: center; padding: 10px;">
-            <div id="tripeiro-term" style="font-size: 1.2rem; font-weight: bold; color: var(--accent);">A carregar...</div>
+            <div id="tripeiro-term" style="font-size: 1.2rem; font-weight: bold; color: var(--accent);">...</div>
             <div id="tripeiro-def" style="font-size: 0.85rem; margin-top: 10px; opacity: 0.8;"></div>
         </div>
         <button onclick="fetchTripeiro()" style="margin-top: 10px; font-size: 0.7rem; opacity: 0.6;">Sugerir mais</button>
@@ -283,7 +283,8 @@
 
     
     // --- Lógica das Expressões Tripeiras ---
-    const expressoesPorto = [
+    // 1. Definir os dados (Array) - GARANTE QUE ESTÁ FORA DE QUALQUER OUTRA FUNÇÃO
+    var expressoesPorto = [
         {t: "ACORDAR DE CU PRÓ AR", d: "Acordar mal-disposto."},
         {t: "ADIANTAR UM GROSSO", d: "Nem vale a pena."},
         {t: "ALAPAR", d: "Sentar bem sentadinho."},
@@ -405,33 +406,29 @@
         {t: "XICO", d: "Período menstrual."},
         {t: "ZEQUINHA", d: "Pessoa meio apalermada." }
     ];
-    function fetchTripeiro() {
-        try {
+    
+    // 2. Definir a função no SCOPE GLOBAL (para o botão onclick a encontrar)
+        window.fetchTripeiro = function() {
+            console.log("A tentar carregar expressão..."); // Verifica se isto aparece na consola (F12)
+            
             const termElem = document.getElementById('tripeiro-term');
             const defElem = document.getElementById('tripeiro-def');
-    
-            if (!termElem || !defElem) {
-                console.error("Erro: Elementos HTML não encontrados!");
-                return;
+        
+            if (termElem && defElem && expressoesPorto.length > 0) {
+                const item = expressoesPorto[Math.floor(Math.random() * expressoesPorto.length)];
+                termElem.innerText = item.t;
+                defElem.innerText = item.d;
+                console.log("Sucesso:", item.t);
+            } else {
+                console.error("Erro: Elementos ou Dados em falta.");
             }
-    
-            const item = expressoesPorto[Math.floor(Math.random() * expressoesPorto.length)];
-            
-            termElem.innerText = item.t;
-            defElem.innerText = item.d;
-            
-            // Pequeno efeito visual de "fade" para saberes que mudou
-            termElem.style.opacity = 0;
-            setTimeout(() => termElem.style.opacity = 1, 50);
-            
-        } catch (e) {
-            console.error("Erro na função fetchTripeiro:", e);
-        }
-    }
+        };
+        
+    // 3. Inicializar assim que a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            window.fetchTripeiro();
+        });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchTripeiro();
-    });
 </script>
     
 <script>
