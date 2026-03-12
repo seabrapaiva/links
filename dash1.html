@@ -50,7 +50,6 @@
         }
         button:hover { background: var(--accent); color: black; cursor: pointer; }
 
-        #terminal-out { height: 100px; overflow-y: auto; font-family: monospace; font-size: 0.8rem; color: #00ff00; margin-bottom: 10px; }
         .news-item { font-size: 0.8rem; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
     </style>
 </head>
@@ -219,14 +218,7 @@
         <div class="news-item"><b>Gaia:</b> Nova ciclovia à beira-rio inaugurada.</div>
     </div>
 
-    <!-- Terminal -->
-    <div class="card" draggable="true">
-        <h3><i class="fas fa-terminal"></i> Terminal</h3>
-        <div id="terminal-out">> Welcome...</div>
-        <input type="text" id="term-in" placeholder="Comando..." onkeydown="handleTerm(event)">
-    </div>
-
-    <!-- Relógios -->
+      <!-- Relógios -->
     <div class="card" draggable="true">
         <h3><i class="fas fa-globe"></i> Fusos Horários</h3>
         <div class="clock-box"><small>Porto:</small> <span id="time-porto">00:00</span></div>
@@ -541,19 +533,6 @@ document.getElementById('focus-mins').addEventListener('input', (e) => {
         let res = "";
         for(let i=0; i<len; i++) res += chars.charAt(Math.floor(Math.random()*chars.length));
         document.getElementById('pass-out').innerText = res;
-    }
-
-    // --- TERMINAL ---
-    function handleTerm(e) {
-        if(e.key === 'Enter') {
-            const cmd = e.target.value;
-            const out = document.getElementById('terminal-out');
-            out.innerHTML += `<div>> ${cmd}</div>`;
-            if(cmd === 'help') out.innerHTML += `<div>Comandos: clear, date, whoami</div>`;
-            else if(cmd === 'clear') out.innerHTML = "";
-            e.target.value = "";
-            out.scrollTop = out.scrollHeight;
-        }
     }
 
     // 1. MOVE ISTO PARA O TOPO DO TEU BLOCO <script>
