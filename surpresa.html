@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Canivete Suíço do Tédio</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --bg: #f0f2f5;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; color: #2d3436; }
+        .card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 500px; width: 100%; margin-bottom: 20px; transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        h1 { color: var(--primary); font-size: 1.5rem; text-align: center; }
+        button { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        button:hover { background: var(--secondary); }
+        #display { font-style: italic; margin-top: 15px; text-align: center; min-height: 50px; border-left: 4px solid var(--primary); padding-left: 10px; display: flex; align-items: center; justify-content: center; }
+        .util { font-size: 0.9rem; color: #636e72; margin-top: 10px; text-align: center; }
+        #timer-display { font-size: 2rem; font-weight: bold; text-align: center; margin: 10px 0; color: #d63031; }
+        input { width: 90%; padding: 10px; border-radius: 5px; border: 1px solid #dfe6e9; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🧠 Gerador de Desculpas "Geniais"</h1>
+        <p class="util">Para quando não queres ir àquela reunião ou jantar.</p>
+        <div id="display">Clica no botão para uma desculpa infalível...</div>
+        <button onclick="gerarDesculpa()">Gerar Desculpa</button>
+    </div>
+
+    <div class="card">
+        <h1>☕ Cronómetro de Foco "Modo Cafeína"</h1>
+        <p class="util">Foca-te por 25 min (Pomodoro). O tempo voa quando não procrastinas!</p>
+        <div id="timer-display">25:00</div>
+        <button onclick="toggleTimer()" id="timerBtn">Iniciar Foco</button>
+    </div>
+
+    <div class="card">
+        <h1>💰 Calculadora de "Horas de Vida"</h1>
+        <p class="util">Quanto tempo de trabalho este café/gadget te custa?</p>
+        <input type="number" id="salario" placeholder="Teu salário mensal (€)">
+        <input type="number" id="custo" placeholder="Preço do objeto (€)">
+        <button onclick="calcularCustoReal()">Calcular Destino</button>
+        <div id="res-custo" style="margin-top:10px; font-weight:bold;"></div>
+    </div>
+
+    <script>
+        // --- Lógica das Desculpas ---
+        const desculpas = [
+            "O meu gato aprendeu a abrir o frigorífico e agora tenho de montar guarda.",
+            "Entrei numa discussão filosófica com o ChatGPT e perdi a noção da realidade.",
+            "O meu vizinho acha que sou um agente infiltrado e não me deixa sair de casa.",
+            "Tentei fazer yoga e agora sou parte integrante do sofá.",
+            "Estou à espera de uma encomenda que diz 'saiu para entrega' desde 2019.",
+            "A minha planta parece triste e precisa de apoio emocional imediato."
+        ];
+
+        function gerarDesculpa() {
+            const index = Math.floor(Math.random() * desculpas.length);
+            document.getElementById('display').innerText = desculpas[index];
+        }
+
+        // --- Lógica do Timer ---
+        let timeLeft = 25 * 60;
+        let timerId = null;
+
+        function updateTimer() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timer-display').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            if (timeLeft === 0) {
+                clearInterval(timerId);
+                alert("Tempo de café! Descansa 5 minutos.");
+            }
+            timeLeft--;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timerBtn');
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+                btn.innerText = "Retomar Foco";
+            } else {
+                timerId = setInterval(updateTimer, 1000);
+                btn.innerText = "Pausar";
+            }
+        }
+
+        // --- Lógica da Calculadora ---
+        function calcularCustoReal() {
+            const sal = document.getElementById('salario').value;
+            const custo = document.getElementById('custo').value;
+            if(sal && custo) {
+                const valorHora = sal / 160; // Média de 160h mensais
+                const horasPagas = (custo / valorHora).toFixed(1);
+                document.getElementById('res-custo').innerText = `Isto vai custar-te ${horasPagas} horas da tua vida. Vale a pena?`;
+            }
+        }
+    </script>
+</body>
+</html>
