@@ -141,8 +141,43 @@
         <div class="clock-box" id="timer-display">25:00</div>
         <button onclick="startTimer()">Iniciar</button>
     </div>
+    
+    <!-- PT ⇄ ENG-->
+    <div class="card" draggable="true">
+        <h3><i class="fas fa-language"></i> Tradutor Rápido</h3>
+        <textarea id="trans-input" placeholder="Escreve aqui..." style="height: 60px; margin-bottom: 5px; font-size: 0.9rem;"></textarea>
+        <div style="display: flex; gap: 5px;">
+            <button onclick="translateText('pt', 'en')" style="flex: 1; font-size: 0.7rem;">PT > EN</button>
+            <button onclick="translateText('en', 'pt')" style="flex: 1; font-size: 0.7rem;">EN > PT</button>
+        </div>
+        <div id="trans-res" style="margin-top: 10px; font-size: 0.9rem; font-style: italic; color: #ccc; border-left: 2px solid var(--accent); padding-left: 10px;"></div>
+    </div>
+    
+    <!-- tripeirices -->
+    <div class="card" draggable="true">
+        <h3><i class="fas fa-microphone-lines"></i> Expressão do Dia (Porto)</h3>
+        <div id="tripeiro-box" style="text-align: center; padding: 10px;">
+            <div id="tripeiro-term" style="font-size: 1.2rem; font-weight: bold; color: var(--accent);">A carregar...</div>
+            <div id="tripeiro-def" style="font-size: 0.85rem; margin-top: 10px; opacity: 0.8;"></div>
+        </div>
+        <button onclick="fetchTripeiro()" style="margin-top: 10px; font-size: 0.7rem; opacity: 0.6;">Sugerir outra da "Net"</button>
+    </div>
+    
+    <!-- Moedas -->
+    <div class="card" draggable="true">
+        <h3><i class="fas fa-coins"></i> Conversor de Moedas</h3>
+        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+            <input type="number" id="curr-amount" value="1" style="flex: 1;">
+            <select id="curr-from"><option value="EUR">EUR</option><option value="USD">USD</option><option value="GBP">GBP</option></select>
+        </div>
+        <div style="display: flex; gap: 5px;">
+            <div id="curr-res" style="flex: 1; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; font-weight: bold; color: var(--accent);">---</div>
+            <select id="curr-to"><option value="USD">USD</option><option value="EUR">EUR</option><option value="ALL">ALL (Albânia)</option></select>
+        </div>
+        <button onclick="convertCurrency()" style="margin-top: 10px; width: 100%;">Converter</button>
+    </div>
 
-    <!-- Horas de Vida -->
+    <!-- Dias de Vida -->
     <div class="card" draggable="true">
         <h3><i class="fas fa-hourglass-half"></i> Custo em Dias de Vida</h3>
         <input type="number" id="salary" placeholder="Salário Mensal (€)">
@@ -214,7 +249,48 @@
         <button onclick="newProverb()" style="margin-top:10px;">Outro</button>
     </div>
 </div>
-
+<script>
+    // --- Lógica do Conversor (API Free) ---
+    async function convertCurrency() {
+        const amount = document.getElementById('curr-amount').value;
+        const from = document.getElementById('curr-from').value;
+        const to = document.getElementById('curr-to').value;
+        try {
+            const res = await fetch(`https://api.exchangerate-api.com{from}`);
+            const data = await res.json();
+            const rate = data.rates[to];
+            document.getElementById('curr-res').innerText = (amount * rate).toFixed(2) + " " + to;
+        } catch { document.getElementById('curr-res').innerText = "Erro API"; }
+    }
+    
+    // --- Lógica do Tradutor (Simulado via MyMemory API gratuita) ---
+    async function translateText(from, to) {
+        const text = document.getElementById('trans-input').value;
+        if(!text) return;
+        const res = await fetch(`https://api.mymemory.translated.net{encodeURIComponent(text)}&langpair=${from}|${to}`);
+        const data = await res.json();
+        document.getElementById('trans-res').innerText = data.responseData.translatedText;
+    }
+    
+    // --- Lógica das Expressões Tripeiras ---
+    const expressoesPorto = [
+        { t: "Dar um balanço", d: "Ir dar uma volta ou despachar algo rapidamente." },
+        { t: "Andar à guna", d: "Comportar-se como um jovem rebelde das zonas urbanas do Porto." },
+        { t: "Cruzeta", d: "O que o resto do país chama de 'cabide'." },
+        { t: "Sertã", d: "Frigideira (termo muito nortenho)." },
+        { t: "Mano", d: "Forma universal de tratar um amigo ou desconhecido no Porto." },
+        { t: "Estrugido", d: "Refogado. Se dizes isto no sul, ninguém entende." }
+    ];
+    
+    function fetchTripeiro() {
+        const item = expressoesPorto[Math.floor(Math.random() * expressoesPorto.length)];
+        document.getElementById('tripeiro-term').innerText = item.t;
+        document.getElementById('tripeiro-def').innerText = item.d;
+    }
+    // Inicializar a expressão ao carregar
+    fetchTripeiro();
+</script>
+    
 <script>
     // --- DRAG & DROP ---
     const grid = document.getElementById('grid');
