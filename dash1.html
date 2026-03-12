@@ -262,15 +262,34 @@
             document.getElementById('curr-res').innerText = (amount * rate).toFixed(2) + " " + to;
         } catch { document.getElementById('curr-res').innerText = "Erro API"; }
     }
-    
-    // --- Lógica do Tradutor (Simulado via MyMemory API gratuita) ---
-    async function translateText(from, to) {
-        const text = document.getElementById('trans-input').value;
-        if(!text) return;
-        const res = await fetch(`https://api.mymemory.translated.net{encodeURIComponent(text)}&langpair=${from}|${to}`);
-        const data = await res.json();
-        document.getElementById('trans-res').innerText = data.responseData.translatedText;
-    }
+    // --- Lógica do Tradutor Rápido Corrigida ---
+        async function translateText(from, to) {
+            const text = document.getElementById('trans-input').value;
+            const resDiv = document.getElementById('trans-res');
+            
+            if(!text) {
+                resDiv.innerText = "Escreve algo primeiro...";
+                return;
+            }
+        
+            resDiv.innerText = "A traduzir...";
+        
+            try {
+                // Usamos um URL de fallback caso o primeiro falhe
+                const response = await fetch(`https://api.mymemory.translated.net{encodeURIComponent(text)}&langpair=${from}|${to}`);
+                const data = await response.json();
+                
+                if(data.responseData.translatedText) {
+                    resDiv.innerText = data.responseData.translatedText;
+                } else {
+                    resDiv.innerText = "Erro na tradução. Tenta novamente.";
+                }
+            } catch (error) {
+                // Se a API falhar, sugerimos a abertura rápida no Google Translate
+                resDiv.innerHTML = `Erro de ligação. <a href="https://translate.google.com{from}&tl=${to}&text=${encodeURIComponent(text)}&op=translate" target="_blank" style="color:var(--accent)">Abrir no Google Translate</a>`;
+            }
+        }
+
     
     // --- Lógica das Expressões Tripeiras ---
     const expressoesPorto = [
