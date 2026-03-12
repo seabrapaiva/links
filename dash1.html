@@ -68,6 +68,63 @@
 </header>
 
 <div class="dashboard-grid" id="grid">
+    <!-- Adiciona este cartão dentro da tua <div class="dashboard-grid"> -->
+    <!-- links -->
+
+<div class="card" draggable="true" id="links-widget">
+    <h3><i class="fas fa-external-link-alt"></i> Teu Centro de Comando (Links)</h3>
+    <div id="links-container" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+        <!-- Links aparecem aqui -->
+    </div>
+    
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+        <input type="text" id="link-name" placeholder="Nome (ex: Google)" style="width: 45%; font-size: 0.8rem;">
+        <input type="text" id="link-url" placeholder="URL (ex: www.google.pt)" style="width: 45%; font-size: 0.8rem;">
+        <button onclick="addLink()" style="width: 100%; margin-top: 5px; padding: 5px;">+ Adicionar Link</button>
+    </div>
+</div>
+
+<script>
+    // --- LÓGICA DE LINKS PERSISTENTES ---
+    let myLinks = JSON.parse(localStorage.getItem('aether_links')) || [
+        { name: "Google", url: "https://www.google.pt" },
+        { name: "NATO", url: "https://www.nato.int" },
+        { name: "Gov Portugal", url: "https://www.gov.pt" }
+    ];
+
+    function renderLinks() {
+        const container = document.getElementById('links-container');
+        container.innerHTML = myLinks.map((link, index) => `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">
+                <a href="${link.url.startsWith('http') ? link.url : 'https://' + link.url}" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: bold; font-size: 0.9rem;">
+                    <i class="fas fa-link" style="font-size: 0.7rem;"></i> ${link.name}
+                </a>
+                <i class="fas fa-times" onclick="removeLink(${index})" style="cursor: pointer; color: #ff4757; font-size: 0.8rem;"></i>
+            </div>
+        `).join('');
+        localStorage.setItem('aether_links', JSON.stringify(myLinks));
+    }
+
+    function addLink() {
+        const name = document.getElementById('link-name').value;
+        const url = document.getElementById('link-url').value;
+        if (name && url) {
+            myLinks.push({ name, url });
+            document.getElementById('link-name').value = '';
+            document.getElementById('link-url').value = '';
+            renderLinks();
+        }
+    }
+
+    function removeLink(index) {
+        myLinks.splice(index, 1);
+        renderLinks();
+    }
+
+    // Inicializa os links ao carregar
+    renderLinks();
+</script>
+
     <!-- Relógios -->
     <div class="card" draggable="true">
         <h3><i class="fas fa-globe"></i> Fusos Horários</h3>
