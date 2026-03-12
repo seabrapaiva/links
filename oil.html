@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oil Price Evolution (2020-2026)</title>
+    <script src="https://cdn.jsdelivr.net"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background-color: #f4f4f9; }
+        .chart-container { width: 80%; max-width: 900px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #333; }
+        .info { margin-top: 15px; font-size: 0.9em; color: #666; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h2>WTI Crude Oil Price Evolution</h2>
+    <div class="chart-container">
+        <canvas id="oilChart"></canvas>
+    </div>
+    <p class="info">Data reflects monthly closing prices (2020-2026) in USD per barrel.</p>
+
+    <script>
+        const ctx = document.getElementById('oilChart').getContext('2d');
+        const oilData = {
+            labels: [
+                'Jan 2020', 'Apr 2020', 'Jan 2021', 'Jun 2021', 'Jan 2022', 'Jun 2022', 
+                'Jan 2023', 'Sep 2023', 'Jan 2024', 'Jun 2024', 'Jan 2025', 'Jun 2025', 
+                'Jan 2026', 'Feb 2026', 'Mar 2026*'
+            ],
+            datasets: [{
+                label: 'Price (USD/Bbl)',
+                data: [51.58, 19.23, 52.16, 73.52, 89.16, 107.76, 78.95, 90.77, 76.28, 81.54, 72.53, 64.79, 60.04, 66.96, 94.77],
+                borderColor: '#e67e22',
+                backgroundColor: 'rgba(230, 126, 34, 0.2)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.3
+            }]
+        };
+
+        new Chart(ctx, {
+            type: 'line',
+            data: oilData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: false,
+                        title: { display: true, text: 'Price in USD' }
+                    },
+                    x: { title: { display: true, text: 'Time Period' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
