@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus: O Teu Centro de Comando</title>
+    <link href="https://cdnjs.cloudflare.com" rel="stylesheet">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.2);
+            --accent: #00d2ff;
+            --dark: #2c3e50;
+        }
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .widget {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h2 { border-bottom: 2px solid var(--accent); padding-bottom: 10px; font-size: 1.2rem; }
+        
+        /* To-Do List */
+        .todo-input { display: flex; gap: 10px; margin-bottom: 15px; }
+        input[type="text"] { flex: 1; padding: 10px; border-radius: 8px; border: none; }
+        .todo-item { display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 10px; margin-top: 5px; border-radius: 5px; }
+        
+        /* Pass Gen */
+        .pass-display { background: #fff; color: #333; padding: 10px; border-radius: 8px; margin: 15px 0; font-family: monospace; font-size: 1.1rem; text-align: center; }
+        
+        /* Mood Tracker */
+        .mood-btns { display: flex; justify-content: space-around; font-size: 2rem; cursor: pointer; }
+        .mood-btns span { transition: transform 0.2s; }
+        .mood-btns span:hover { transform: scale(1.3); }
+
+        button { 
+            background: var(--accent); color: white; border: none; padding: 10px 15px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        button:hover { filter: brightness(1.2); }
+        .delete-btn { background: #ff4757; padding: 5px 10px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Bloco 1: Gestão de Vida -->
+    <div class="widget">
+        <h2><i class="fas fa-tasks"></i> Missões Críticas (To-Do)</h2>
+        <div class="todo-input">
+            <input type="text" id="todoInput" placeholder="Próximo passo para dominar o mundo...">
+            <button onclick="addTodo()">+</button>
+        </div>
+        <div id="todoList"></div>
+    </div>
+
+    <!-- Bloco 2: Segurança Digital -->
+    <div class="widget">
+        <h2><i class="fas fa-key"></i> Gerador de Passwords "Inquebráveis"</h2>
+        <p style="font-size: 0.8rem; opacity: 0.8;">Cria chaves que nem tu vais decorar (e isso é bom).</p>
+        <div id="passOutput" class="pass-display">P4ssw0rd!2024</div>
+        <button style="width: 100%;" onclick="generatePass()">Gerar Nova Chave</button>
+        <p id="copyStatus" style="font-size: 0.7rem; text-align: center; margin-top: 5px;"></p>
+    </div>
+
+    <!-- Bloco 3: Mood & Mental Health -->
+    <div class="widget">
+        <h2><i class="fas fa-brain"></i> Check-in Emocional</h2>
+        <div class="mood-btns">
+            <span onclick="checkMood('Incrível!')">🤩</span>
+            <span onclick="checkMood('Sobrevivendo...')">😐</span>
+            <span onclick="checkMood('Preciso de Férias')">😫</span>
+            <span onclick="checkMood('Modo Zen')">🧘</span>
+        </div>
+        <div id="moodMsg" style="text-align: center; margin-top: 20px; font-style: italic;">Como te sentes hoje?</div>
+    </div>
+
+    <!-- Bloco 4: Utilidade Extra -->
+    <div class="widget">
+        <h2><i class="fas fa-clock"></i> Hora de Ser Produtivo</h2>
+        <p id="clockDisplay" style="font-size: 3rem; text-align: center; margin: 10px 0; font-weight: bold;"></p>
+        <p style="text-align: center; font-size: 0.9rem;">"O tempo é o que mais queremos, mas o que pior usamos."</p>
+    </div>
+
+    <script>
+        // --- RELÓGIO ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockDisplay').innerText = now.toLocaleTimeString('pt-PT');
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- TO-DO LIST COM LOCAL STORAGE ---
+        let todos = JSON.parse(localStorage.getItem('myTodos')) || [];
+        function renderTodos() {
+            const list = document.getElementById('todoList');
+            list.innerHTML = '';
+            todos.forEach((todo, index) => {
+                list.innerHTML += `
+                    <div class="todo-item">
+                        <span>${todo}</span>
+                        <button class="delete-btn" onclick="removeTodo(${index})">X</button>
+                    </div>`;
+            });
+            localStorage.setItem('myTodos', JSON.stringify(todos));
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            if (input.value) {
+                todos.push(input.value);
+                input.value = '';
+                renderTodos();
+            }
+        }
+
+        function removeTodo(index) {
+            todos.splice(index, 1);
+            renderTodos();
+        }
+        renderTodos();
+
+        // --- GERADOR DE PASSWORD ---
+        function generatePass() {
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+            let pass = "";
+            for (let i = 0; i < 14; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            const out = document.getElementById('passOutput');
+            out.innerText = pass;
+            
+            // Auto-copy
+            navigator.clipboard.writeText(pass);
+            document.getElementById('copyStatus').innerText = "Copiado para o clipboard!";
+            setTimeout(() => document.getElementById('copyStatus').innerText = "", 2000);
+        }
+
+        // --- MOOD TRACKER ---
+        function checkMood(msg) {
+            document.getElementById('moodMsg').innerText = `Registado: "${msg}". Amanhã será ainda melhor!`;
+        }
+    </script>
+</body>
+</html>
