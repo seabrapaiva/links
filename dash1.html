@@ -151,7 +151,7 @@
             <div id="tripeiro-term" style="font-size: 1.2rem; font-weight: bold; color: var(--accent);">A carregar...</div>
             <div id="tripeiro-def" style="font-size: 0.85rem; margin-top: 10px; opacity: 0.8;"></div>
         </div>
-        <button onclick="fetchTripeiro()" style="margin-top: 10px; font-size: 0.7rem; opacity: 0.6;">Sugerir outra</button>
+        <button onclick="fetchTripeiro()" style="margin-top: 10px; font-size: 0.7rem; opacity: 0.6;">Sugerir mais</button>
     </div>
     
     <!-- Moedas -->
@@ -406,14 +406,33 @@
         {t:"ZEQUINHA ", d:"Pessoa meio apalermada." }
 
     ];
-    
     function fetchTripeiro() {
-        const item = expressoesPorto[Math.floor(Math.random() * expressoesPorto.length)];
-        document.getElementById('tripeiro-term').innerText = item.t;
-        document.getElementById('tripeiro-def').innerText = item.d;
+        try {
+            const termElem = document.getElementById('tripeiro-term');
+            const defElem = document.getElementById('tripeiro-def');
+    
+            if (!termElem || !defElem) {
+                console.error("Erro: Elementos HTML não encontrados!");
+                return;
+            }
+    
+            const item = expressoesPorto[Math.floor(Math.random() * expressoesPorto.length)];
+            
+            termElem.innerText = item.t;
+            defElem.innerText = item.d;
+            
+            // Pequeno efeito visual de "fade" para saberes que mudou
+            termElem.style.opacity = 0;
+            setTimeout(() => termElem.style.opacity = 1, 50);
+            
+        } catch (e) {
+            console.error("Erro na função fetchTripeiro:", e);
+        }
     }
-    // Inicializar a expressão ao carregar
-    fetchTripeiro();
+
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchTripeiro();
+    });
 </script>
     
 <script>
