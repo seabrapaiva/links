@@ -523,20 +523,6 @@ document.getElementById('focus-mins').addEventListener('input', (e) => {
     }
 });
 
-
-    // --- TO-DO (LocalStorage) ---
-    let todos = JSON.parse(localStorage.getItem('aether_todos')) || [];
-    function renderTodos() {
-        const container = document.getElementById('todo-list');
-        container.innerHTML = todos.map((t, i) => `<div class="todo-item"><input type="checkbox"> ${t}</div>`).join('');
-        localStorage.setItem('aether_todos', JSON.stringify(todos));
-    }
-    function addTodo() {
-        const val = document.getElementById('todo-in').value;
-        if(val) { todos.push(val); document.getElementById('todo-in').value = ''; renderTodos(); }
-    }
-    renderTodos();
-
     // --- CALCULADORA DIAS DE VIDA ---
     function calcLifeDays() {
         const sal = document.getElementById('salary').value;
