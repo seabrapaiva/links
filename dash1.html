@@ -556,21 +556,30 @@ document.getElementById('focus-mins').addEventListener('input', (e) => {
         }
     }
 
-    // --- PROVÉRBIOS (CORRIGIDO) ---
-    const proverbs = [
-        "A cavalo dado não se olha o dente.", 
-        "Mais vale um pássaro na mão que dois a voar.",
-        "Quem canta seus males espanta.", 
-        "De Espanha, nem bom vento nem bom casamento."
-    ];
-    
-    function newProverb() {
-        const proverbElem = document.getElementById('proverb');
-        if (proverbElem) {
-            const randomProverb = proverbs[Math.floor(Math.random() * proverbs.length)];
-            proverbElem.innerText = `"${randomProverb}"`;
-        }
-    }
+    // 1. MOVE ISTO PARA O TOPO DO TEU BLOCO <script>
+        var proverbs = [
+            "A cavalo dado não se olha o dente.", 
+            "Mais vale um pássaro na mão que dois a voar.",
+            "Quem canta seus males espanta.", 
+            "De Espanha, nem bom vento nem bom casamento.",
+            "Grão a grão, enche a galinha o papo."
+        ];
+        
+        // 2. ALTERA A FUNÇÃO PARA SER GLOBAL
+        window.newProverb = function() {
+            const proverbElem = document.getElementById('proverb');
+            if (proverbElem && proverbs.length > 0) {
+                const randomProverb = proverbs[Math.floor(Math.random() * proverbs.length)];
+                proverbElem.innerText = `"${randomProverb}"`;
+            }
+        };
+        
+        // 3. OPCIONAL: INICIALIZAR NO DOMCONTENTLOADED
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.newProverb === 'function') {
+                window.newProverb();
+            }
+        });
 </script>
 </body>
 </html>
