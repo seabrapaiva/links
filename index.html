@@ -53,6 +53,7 @@
 		.opt3 {background: brown;}
 		.opt4 {background: lightblue;}
 		.opt5 {background: red;}
+		.opt6 {background: green;}
 		.btn {
 			padding: 10px; 
 			text-align: center; 
@@ -91,7 +92,7 @@
 		<hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
 		<div class="container5"><div id="link-grid5" class="grid"></div></div>
 		<hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
-		<div class="container6"><div id="link-grid5" class="grid"></div></div>
+		<div class="container6"><div id="link-grid6" class="grid"></div></div>
     </div>
 
     <script>
@@ -169,6 +170,18 @@
 		const container4 = document.getElementById('link-grid4');
 			container4.innerHTML = links4.map(link => `
 			<a href="${link.url}" target="_blank" class="btn opt4">
+				${link.name}
+			</a>
+		`).join('');
+	</script>
+	<script>
+		const links6 = [
+			{ name: "VENDER", url: "https://seabrapaiva.github.io/artigosV/" },
+			{ name: "DOAR", url: "https://seabrapaiva.github.io/artigosD/" }
+		];
+		const container4 = document.getElementById('link-grid6');
+			container4.innerHTML = links4.map(link => `
+			<a href="${link.url}" target="_blank" class="btn opt6">
 				${link.name}
 			</a>
 		`).join('');
