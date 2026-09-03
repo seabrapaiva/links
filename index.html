@@ -1,196 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protected Content</title>
+    <title>Career Dashboard</title>
     <style>
-		body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: white;
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --border-color: #334155; 
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            line-height: 1.5;
+        }
+
+        #dashboard-container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .group-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: border-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .group-card:hover {
+            border-color: #475569;
+        }
+
+        .group-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .btn {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0;        }
-        #lock-screen {
+            padding: 14px 20px;
+            background-color: #334155;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
             text-align: center;
-            background: #2d2d2d;
-            padding: 40px;
-            width: 200px;
-            border-radius: 15px; 
-			justify-content: center;
-			align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);}
-        input {
-            padding: 12px;
-            font-size: 18px;
-            border-radius: 5px;
-            border: none;
-            width: 200px;
-            text-align: center;
-            margin-bottom: 20px;}
-        button {
-            padding: 12px 25px;
-            font-size: 16px;
-            background-color: #007bff;
+            border: 1px solid #475569;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            border-color: var(--accent-hover);
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;}
-        button:hover {
-            background-color: #0056b3;}
-        .error-msg {
-            color: #ff4d4d;
-            margin-top: 15px;
-            display: none;}
-        #protected-content {
-            display: none; /* Stays hidden until unlocked */
-            text-align: center;}
-		.opt1 {background: grey;}
-		.opt2 {background: blue;}
-		.opt3 {background: brown;}
-		.opt4 {background: lightblue;}
-		.opt5 {background: red;}
-		.opt6 {background: green;}
-		.btn {
-			padding: 10px; 
-			text-align: center; 
-			border: 3px solid #ddd; 
-			border-radius: 15px; 
-			text-decoration: none; 
-			color: #333; 
-			font-weight: bold; 
-			transition: 0.2s;
-			font-size: 50px;
-			}
-		.btn:hover { 
-			border-color: #007bff;
-			background: #f0f7ff; 
-			transform: translateY(-2px); 
-		}
-		</style>
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
+        /* --- Surprise AI Feature Styles --- */
+        .ai-special-card {
+            position: relative;
+            background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+                        linear-gradient(90deg, #ff007f, #7928ca, #0070f3) border-box;
+            border: 2px solid transparent;
+            animation: pulse-glow 3s infinite alternate;
+        }
+
+        .ai-special-card .group-title {
+            background: linear-gradient(90deg, #ff007f, #7928ca, #0070f3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-bottom-color: #7928ca;
+            font-weight: bold;
+        }
+
+        .ai-special-card .btn:hover {
+            background: linear-gradient(90deg, #7928ca, #0070f3);
+            border-color: transparent;
+            box-shadow: 0 10px 20px -3px rgba(121, 40, 202, 0.4);
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px rgba(121, 40, 202, 0.2); }
+            100% { box-shadow: 0 0 25px rgba(0, 112, 243, 0.5); }
+        }
+    </style>
 </head>
 <body>
-    <div id="protected-content">
-		<br><br><div class="container1"><div id="link-grid1" class="grid"></div></div>
-		<hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
-		<div class="container2"><div id="link-grid2" class="grid"></div></div>
-		<hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
-		<div class="container3"><div id="link-grid3" class="grid"></div></div>
-		<hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
-		<div class="container4"><div id="link-grid4" class="grid"></div></div>
-		<hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
-		<div class="container5"><div id="link-grid5" class="grid"></div></div>
-		<hr style="border:0; border-top:1px solid #ccc; margin:15px 0;">
-		<div class="container6"><div id="link-grid6" class="grid"></div></div>
-    </div>
+
+    <div id="dashboard-container">
+        <div class="header">
+            <h1>Career Portals</h1>
+        </div>
+        </div>
 
     <script>
-		//const _0x4a21 = "MTIzNDQzMjE="; 
-		const _0x4a21 = "MTIzNA==";
+        const jobData = [
+            {
+                title: "Institutions & Corporations",
+                links: [
+                    { name: "NATO", url: "https://nato.taleo.net/careersection/2/jobsearch.ftl" },
+                    { name: "EU Careers", url: "https://eu-careers.europa.eu/" },
+                    { name: "NETCompany", url: "https://netcompany.com/careers/vacancies/" },
+                    { name: "EID", url: "https://www.eid.pt/career-opportunities/" }
+                ]
+            },
+            {
+                title: "Agencies & Consultancies",
+                links: [
+                    { name: "BREVCO", url: "https://brevcoservices.com/portal_mail/" },
+                    { name: "SPEKTRUM", url: "https://spektrum-group.com/jobs" },
+                    { name: "LA-Int", url: "https://www.lainternational.com/cm/job-search" },
+                    { name: "Vector Synergy", url: "https://www.vectorsynergy.com/job-board" }
+                ]
+            },
+            {
+                title: "Remote & Freelance",
+                links: [
+                    { name: "Wellfound", url: "https://wellfound.com/" },
+                    { name: "Upwork", url: "https://www.upwork.com/" },
+                    { name: "Himalayas", url: "https://himalayas.app/" },
+                    { name: "RemoteOK", url: "https://remoteok.com/" },
+                    { name: "Remote.com", url: "https://remote.com/" },
+                    { name: "CareerHound", url: "https://www.careerhound.io/" },
+                    { name: "weworkremotely", url: "weworkremotely.com/" },
+                    { name: "flexjobs", url: "https://www.flexjobs.com/" },
+                    { name: "dynamitejobs", url: "https://www.dynamitejobs.com/" },
+                    { name: "secretremote", url: "https://www.secretremote.com/" },
+                    { name: "workingnomads", url: "https://www.workingnomads.com/" },
+                    { name: "nodesk", url: "https://www.nodesk.com/" }
+                ]
+            },
+            {
+                title: "Specific Vacancies & Temporary",
+                links: [
+                    { name: "SWORD HEALTH", url: "https://swordhealth.com/company/careers" },
+                    { name: "IQVIA", url: "https://jobs.iqvia.com/en/jobs" },
+                    { name: "Celfocus", url: "https://careers.celfocus.com/connect/dashboard" },
+                    { name: "ERA External Call", url: "https://www.era.europa.eu/vacancy/external-call-applications-posts-project-officers-agency-relevant-units" },
+                    { name: "ERA Project Officers (PDF)", url: "https://www.era.europa.eu/sites/default/files/2026-02/call%20for%20applications%20era-ca-2026-001-ope.pdf?t=1772155115" },
+                    { name: "EBA DORA Data Spec.", url: "https://eu-careers.europa.eu/en/job-opportunities/dora-oversight-data-specialist/eba-dora-ca-53d-2026" },
+                    { name: "EDA Project Officer", url: "https://eu-careers.europa.eu/en/job-opportunities/project-officer-support-capabilities-planning/eda-2026-177a" },
+                    { name: "EU Senior IT Officer", url: "https://eu-careers.europa.eu/en/job-opportunities/senior-information-technology-officer-project-programme-management-profile-ad7/eu" },
+                    { name: "Europol ECTC Spec.", url: "https://eu-careers.europa.eu/en/job-opportunities/specialist-ectc-expertise-stakeholder-management/europol-2026-ta-ad6-744" },
+                    { name: "Digital Euro Privacy", url: "https://eu-careers.europa.eu/en/job-opportunities/digital-euro-privacy-expert-data-protection-office/13413" }
+                ]
+            },
+            {
+                title: "✨ AI Recommended",
+                isAiRecommended: true,
+                links: [
+                    { name: "Landing.Jobs", url: "https://landing.jobs/" },
+                    { name: "ITJobs Portugal", url: "https://www.itjobs.pt/" },
+                    { name: "Net-Empregos (IT/PM)", url: "https://www.net-empregos.com/" },
+                    { name: "LinkedIn Tech PT", url: "https://www.linkedin.com/jobs/it-jobs-portugal/" },
+                    { name: "Expresso Emprego", url: "https://expressoemprego.pt/" },
+                    { name: "SAPO Emprego Tech", url: "https://emprego.sapo.pt/" }
+                ]
+            }
+        ];
 
-		function verifyCode() {
-			const input = document.getElementById('code-input').value;
-			const error = document.getElementById('error');
-			const decoded = atob(_0x4a21);
-			if (input === decoded) {
-				document.getElementById('lock-screen').style.display = "none";
-				document.getElementById('protected-content').style.display = "block";
-			} else {
-				error.style.display = "block";
-				document.getElementById('code-input').value = "";
-			}
-		}
+        function renderDashboard() {
+            const container = document.getElementById('dashboard-container');
 
-		document.getElementById('code-input').addEventListener('keypress', (e) => {
-			if (e.key === 'Enter') verifyCode();
-		});
-	</script>
-	<script>
-		const links1 = [
-			{ name: "NATO", url: "https://nato.taleo.net/careersection/2/jobsearch.ftl" },
-			{ name: "EU", url: "https://eu-careers.europa.eu/" },
-			{ name: "NETCompany", url: "https://netcompany.com/careers/vacancies/" },
-			{ name: "EID", url: "https://www.eid.pt/career-opportunities/" }
-		];
-		const container1 = document.getElementById('link-grid1');
-		
-		container1.innerHTML = links1.map(link => `
-			<a href="${link.url}" target="_blank" class="btn opt1">
-					${link.name}
-			</a>
-		`).join('');
-	</script>
-	<script>
-		const links2 = [
-			{ name: "BREVCO", url: "https://brevcoservices.com/portal_mail/" },
-			{ name: "SPEKTRUM", url: "https://spektrum-group.com/jobs" },
-			{ name: "LA-Int", url: "https://www.lainternational.com/cm/job-search" },
-			{ name: "Vector", url: "https://www.vectorsynergy.com/job-board" },
-			{ name: "AUBAY", url: "https://www.aubay.pt/en/career" }
-		];
-		const container2 = document.getElementById('link-grid2');		
-		container2.innerHTML = links2.map(link => `
-			<a href="${link.url}" target="_blank" class="btn opt2">
-					${link.name}
-			</a>
-		`).join('');
-	</script>
-	
-	<script>
-		const links3 = [						
-			{ name: "SWORD HEALTH", url: "https://swordhealth.com/company/careers" },
-			{ name: "IQVIA", url: "https://jobs.iqvia.com/en/jobs" }						
-		];
+            jobData.forEach(group => {
+                const card = document.createElement('div');
+                card.className = 'group-card';
+                
+                // Add the surprise CSS class if this is the AI recommended section
+                if (group.isAiRecommended) {
+                    card.classList.add('ai-special-card');
+                }
 
-		const container3 = document.getElementById('link-grid3');
-		
-		container3.innerHTML = links3.map(link => `
-			<a href="${link.url}" target="_blank" class="btn opt3">
-				${link.name}
-			</a>
-		`).join('');
-	</script>
-	
-	<script>
-		const links4 = [
-			{ name: "wellfound", url: "https://wellfound.com/" },
-			{ name: "upwork", url: "https://www.upwork.com/" },
-			{ name: "himalayas", url: "https://himalayas.app/" },
-			{ name: "remoteok", url: "https://remoteok.com/" }
-		];
-		const container4 = document.getElementById('link-grid4');
-			container4.innerHTML = links4.map(link => `
-			<a href="${link.url}" target="_blank" class="btn opt4">
-				${link.name}
-			</a>
-		`).join('');
-	</script>
-	https://remote.com/
-	https://www.careerhound.io/
-	
-	<script>
-		const links5 = [
-			{ name: "ver", url: "https://careers.celfocus.com/connect/dashboard" },
-			{ name: "Temp1", url: "https://www.era.europa.eu/vacancy/external-call-applications-posts-project-officers-agency-relevant-units" },
-			{ name: "Temp2", url: "https://www.era.europa.eu/sites/default/files/2026-02/call%20for%20applications%20era-ca-2026-001-ope.pdf?t=1772155115" }
-			{ name: "Temp3", url: "https://eu-careers.europa.eu/en/job-opportunities/dora-oversight-data-specialist/eba-dora-ca-53d-2026" },
-			{ name: "Temp4", url: "https://eu-careers.europa.eu/en/job-opportunities/project-officer-support-capabilities-planning/eda-2026-177a" },
-			{ name: "Temp5", url: "https://eu-careers.europa.eu/en/job-opportunities/senior-information-technology-officer-project-programme-management-profile-ad7/eu" },
-			{ name: "Temp6", url: "https://eu-careers.europa.eu/en/job-opportunities/specialist-ectc-expertise-stakeholder-management/europol-2026-ta-ad6-744" },
-			{ name: "Temp7", url: "https://eu-careers.europa.eu/en/job-opportunities/digital-euro-privacy-expert-data-protection-office/13413" },
-			{ name: "Temp8", url: "https://eu-careers.europa.eu/en/job-opportunities/senior-information-technology-officer-project-programme-management-profile-ad7/eu" }
-		];
-		const container5 = document.getElementById('link-grid5');
-			container5.innerHTML = links5.map(link => `
-			<a href="${link.url}" target="_blank" class="btn opt5">
-				${link.name}
-			</a>
-		`).join('');
-	</script>
+                const title = document.createElement('h2');
+                title.className = 'group-title';
+                title.textContent = group.title;
+                card.appendChild(title);
 
-	
+                const grid = document.createElement('div');
+                grid.className = 'links-grid';
+
+                group.links.forEach(link => {
+                    const anchor = document.createElement('a');
+                    anchor.href = link.url;
+                    anchor.target = "_blank";
+                    anchor.className = "btn";
+                    anchor.textContent = link.name;
+                    grid.appendChild(anchor);
+                });
+
+                card.appendChild(grid);
+                container.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderDashboard);
+    </script>
 </body>
 </html>
